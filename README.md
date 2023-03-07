@@ -13,5 +13,5 @@ OPENAI_API_KEY=your-openAI-api-key
 ```bash
 git clone https://github.com/MaxPuig/openAI-chat-Discord-bot.git
 npm install
-node insdex.js
+node index.js
 ```
