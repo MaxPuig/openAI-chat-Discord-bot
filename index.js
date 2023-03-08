@@ -18,6 +18,8 @@ client.on('ready', async function () {
 
 client.on('messageCreate', async function (message) {
     if (message.author.bot) return;
+    const regex = /^<@\d{17,19}>/; // Regex to match a mention
+    if (message.content.match(regex)) return; // If the message is a mention, ignore it.
     if (message.content.startsWith('<')) {
         const message_user = message.content.substring(1);
         await message.channel.sendTyping();

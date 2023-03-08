@@ -7,13 +7,24 @@ await db.read();
 if (db.data === null) { // If the database doesn't exist, create it.
     db.data = {
         'chat': {
-            'serverId':{
+            'serverId': {
                 'userId': {
-                    model: 'gpt-3.5-turbo',
-                    messages: []
+                    'content': {
+                        'model': 'gpt-3.5-turbo',
+                        'messages': [
+                            { 'role': 'system', 'content': 'You are an AI...' },
+                            { 'role': 'user', 'content': 'Who are you?' }
+                        ],
+                    },
+                    'history': [
+                        [
+                            { 'role': 'system', 'content': 'you are...' },
+                            { 'role': 'user', 'content': 'Who are you?' }
+                        ]
+                    ]
                 }
             }
-        },
+        }
     }
     await db.write();
 }
