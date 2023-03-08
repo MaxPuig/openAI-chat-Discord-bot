@@ -5,7 +5,7 @@ import { getDatabase, setDatabase } from './database.js';
 const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(configuration);
 
-const default_system_message = [{ "role": "system", "content": "You are a helpful, creative, clever, concise and very precise." }];
+const default_system_message = [{ "role": "system", "content": "You are a helpful, creative, clever, concise and very precise AI." }];
 
 async function getChatAnswer(serverId, userId, message) {
     let chatDB = await getDatabase('chat');
