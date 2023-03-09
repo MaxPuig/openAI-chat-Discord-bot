@@ -23,6 +23,7 @@ async function getChatAnswer(serverId, userId, message) {
     }
 
     if (message.toLowerCase() == 'clear' || message.toLowerCase() == ' clear') {
+        if(chatDB[serverId][userId].content.messages.length <= 1) return ['Nothing to clear!'];
         chatDB[serverId][userId].history.push(chatDB[serverId][userId].content.messages);
         chatDB[serverId][userId].content.messages = default_system_message;
         await setDatabase('chat', chatDB);

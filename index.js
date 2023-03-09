@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { getChatAnswer } from './utils/chat.js';
-import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Events, ButtonStyle } from 'discord.js';
 
 
 const client = new Client({
@@ -16,7 +16,7 @@ client.on('ready', async function () {
 });
 
 
-client.on('messageCreate', async function (message) {
+client.on(Events.MessageCreate, async message => {
     if (message.author.bot) return;
     const regex = /^<@\d{17,19}>/; // Regex to match a mention
     if (message.content.match(regex)) return; // If the message is a mention, ignore it.
@@ -27,10 +27,35 @@ client.on('messageCreate', async function (message) {
         for (let i = 0; i < chatAnswer.length; i++) {
             await message.channel.sendTyping();
             if (i == 0) {
-                await message.reply(chatAnswer[i]);
+                if (chatAnswer.length == 1) {
+
+                    await message.reply({
+                        content: chatAnswer[i],
+                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
+                    });
+                } else {
+                    await message.reply(chatAnswer[i]);
+                }
             } else {
-                await message.channel.send(chatAnswer[i]);
+                if (i == chatAnswer.length - 1) {
+                    await message.reply({
+                        content: chatAnswer[i],
+                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
+                    });
+                } else {
+                    await message.channel.send(chatAnswer[i]);
+                }
             }
+        }
+    }
+});
+
+
+client.on(Events.InteractionCreate, async interaction => {
+    if (interaction.isButton()) {
+        if (interaction.customId == 'clear') {
+            let chatAnswer = await getChatAnswer(interaction.guild.id, interaction.user.id, 'clear');
+            await interaction.reply({ content: `<@${interaction.user.id}> ` + chatAnswer[0], components: [] });
         }
     }
 });
