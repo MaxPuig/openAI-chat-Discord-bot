@@ -28,7 +28,6 @@ client.on(Events.MessageCreate, async message => {
             await message.channel.sendTyping();
             if (i == 0) {
                 if (chatAnswer.length == 1) {
-
                     await message.reply({
                         content: chatAnswer[i],
                         components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
@@ -37,8 +36,8 @@ client.on(Events.MessageCreate, async message => {
                     await message.reply(chatAnswer[i]);
                 }
             } else {
-                if (i == chatAnswer.length - 1) {
-                    await message.reply({
+                if (i == chatAnswer.length - 1) { // Last chunk
+                    await message.send({
                         content: chatAnswer[i],
                         components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
                     });
