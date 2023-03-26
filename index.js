@@ -37,7 +37,7 @@ client.on(Events.MessageCreate, async message => {
                 }
             } else {
                 if (i == chatAnswer.length - 1) { // Last chunk
-                    await message.send({
+                    await message.channel.send({
                         content: chatAnswer[i],
                         components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
                     });
