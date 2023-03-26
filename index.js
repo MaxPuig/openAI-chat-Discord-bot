@@ -30,7 +30,7 @@ client.on(Events.MessageCreate, async message => {
                 if (chatAnswer.length == 1) {
                     await message.reply({
                         content: chatAnswer[i],
-                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
+                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '<clear', customId: 'clear' }] }]
                     });
                 } else {
                     await message.reply(chatAnswer[i]);
@@ -39,7 +39,7 @@ client.on(Events.MessageCreate, async message => {
                 if (i == chatAnswer.length - 1) { // Last chunk
                     await message.channel.send({
                         content: chatAnswer[i],
-                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '🗑️ Clear', customId: 'clear' }] }]
+                        components: [{ type: 1, components: [{ type: 2, style: ButtonStyle.Danger, label: '<clear', customId: 'clear' }] }]
                     });
                 } else {
                     await message.channel.send(chatAnswer[i]);
