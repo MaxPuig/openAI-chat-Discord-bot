@@ -23,15 +23,17 @@ async function getChatAnswer(serverId, userId, message) {
     }
 
     if (message.toLowerCase() == 'clear' || message.toLowerCase() == ' clear') {
-        if(chatDB[serverId][userId].content.messages.length <= 1) return ['Nothing to clear!'];
+        if (chatDB[serverId][userId].content.messages.length <= 1) return ['Nothing to clear!'];
         chatDB[serverId][userId].history.push(chatDB[serverId][userId].content.messages);
         chatDB[serverId][userId].content.messages = default_system_message;
         await setDatabase('chat', chatDB);
         return ['History cleared!'];
     }
-
+    chatDB[serverId][userId].thinking = true;
+    await setDatabase('chat', chatDB);
     chatDB[serverId][userId].content.messages.push({ "role": "user", "content": message });
     const response = await openai.createChatCompletion(chatDB[serverId][userId].content);
+    chatDB[serverId][userId].thinking = false;
     chatDB[serverId][userId].content.messages.push({ "role": "system", "content": response.data.choices[0].message.content });
     await setDatabase('chat', chatDB);
 

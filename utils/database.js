@@ -9,6 +9,7 @@ if (db.data === null) { // If the database doesn't exist, create it.
         'chat': {
             'serverId': {
                 'userId': {
+                    'thinking': 'false',
                     'content': {
                         'model': 'gpt-3.5-turbo',
                         'messages': [

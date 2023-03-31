@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import { getDatabase } from './utils/database.js';
 import { getChatAnswer } from './utils/chat.js';
 import { Client, GatewayIntentBits, Partials, Events, ButtonStyle } from 'discord.js';
 
@@ -18,11 +19,11 @@ client.on('ready', async function () {
 
 client.on(Events.MessageCreate, async message => {
     if (message.author.bot) return;
-    const regex = /^<@\d{17,19}>/; // Regex to match a mention
+    const regex = /^<(@[!&]?|[#])([0-9]+)>/; // Regex to match mentions
     if (message.content.match(regex)) return; // If the message is a mention, ignore it.
     if (message.content.startsWith('<')) {
         const message_user = message.content.substring(1);
-        await message.channel.sendTyping();
+        sendStartTyping(message.guild.id, message.author.id, message.channel);
         let chatAnswer = await getChatAnswer(message.guild.id, message.author.id, message_user);
         for (let i = 0; i < chatAnswer.length; i++) {
             await message.channel.sendTyping();
@@ -58,6 +59,18 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 });
+
+
+async function sendStartTyping(serverId, userId, channel) {
+    let thinking = true;
+    while (thinking) {
+        console.log('Thinking...');
+        channel.sendTyping();
+        await new Promise(resolve => setTimeout(resolve, 4000)); // sleep 4 seconds
+        let chatDB = await getDatabase('chat');
+        thinking = chatDB[serverId][userId].thinking;
+    }
+}
 
 
 client.login(process.env.TOKEN);
