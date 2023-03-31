@@ -64,7 +64,6 @@ client.on(Events.InteractionCreate, async interaction => {
 async function sendStartTyping(serverId, userId, channel) {
     let thinking = true;
     while (thinking) {
-        console.log('Thinking...');
         channel.sendTyping();
         await new Promise(resolve => setTimeout(resolve, 4000)); // sleep 4 seconds
         let chatDB = await getDatabase('chat');
