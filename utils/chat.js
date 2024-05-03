@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import { getDatabase, setDatabase } from './database.js';
-const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI({ apiKey: process.env['OPENAI_API_KEY'], });
 
-const default_system_message = [{ "role": "system", "content": "You are a helpful, creative, clever, concise and very precise AI." }];
+const default_system_message = [{ "role": "system", "content": "You are a helpful and straight to the point AI. Use markdown syntax when needed." }];
 
 async function getChatAnswer(serverId, userId, message) {
     let chatDB = await getDatabase('chat');
@@ -32,12 +31,12 @@ async function getChatAnswer(serverId, userId, message) {
     chatDB[serverId][userId].thinking = true;
     await setDatabase('chat', chatDB);
     chatDB[serverId][userId].content.messages.push({ "role": "user", "content": message });
-    const response = await openai.createChatCompletion(chatDB[serverId][userId].content);
+    const response = await openai.chat.completions.create(chatDB[serverId][userId].content);
     chatDB[serverId][userId].thinking = false;
-    chatDB[serverId][userId].content.messages.push({ "role": "system", "content": response.data.choices[0].message.content });
+    chatDB[serverId][userId].content.messages.push({ "role": "system", "content": response.choices[0].message.content });
     await setDatabase('chat', chatDB);
 
-    let answer = response.data.choices[0].message.content;
+    let answer = response.choices[0].message.content;
     if (chatDB[serverId][userId].content.messages.length > 15) {
         answer = '```Note: Please clear chat, answers are getting expensive\n' +
             'Your conversation is ' + chatDB[serverId][userId].content.messages.length + ' messages long.\n' +
