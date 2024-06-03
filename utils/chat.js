@@ -4,7 +4,10 @@ import OpenAI from 'openai';
 import { getDatabase, setDatabase } from './database.js';
 const openai = new OpenAI({ apiKey: process.env['OPENAI_API_KEY'], });
 
-const default_system_message = [{ "role": "system", "content": "You are a helpful and straight to the point AI. Use markdown syntax when needed." }];
+const default_content = {
+    model: 'gpt-4o',
+    messages: [{ "role": "system", "content": "You are a helpful and straight to the point AI. Use markdown syntax when needed." }]
+}
 
 async function getChatAnswer(serverId, userId, message) {
     let chatDB = await getDatabase('chat');
@@ -13,10 +16,7 @@ async function getChatAnswer(serverId, userId, message) {
     }
     if (!chatDB[serverId][userId]) {
         chatDB[serverId][userId] = {
-            content: {
-                model: 'gpt-3.5-turbo',
-                messages: default_system_message,
-            },
+            content: default_content,
             history: []
         };
     }
@@ -24,7 +24,7 @@ async function getChatAnswer(serverId, userId, message) {
     if (message.toLowerCase() == 'clear' || message.toLowerCase() == ' clear') {
         if (chatDB[serverId][userId].content.messages.length <= 1) return ['Nothing to clear!'];
         chatDB[serverId][userId].history.push(chatDB[serverId][userId].content.messages);
-        chatDB[serverId][userId].content.messages = default_system_message;
+        chatDB[serverId][userId].content = default_content;
         await setDatabase('chat', chatDB);
         return ['History cleared!'];
     }
